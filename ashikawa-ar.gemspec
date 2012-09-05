@@ -16,6 +16,10 @@ Gem::Specification.new do |gem|
   gem.version       = Ashikawa::AR::VERSION
 
   gem.add_dependency "ashikawa-core", "~> 0.2.1"
+  gem.add_dependency "virtus", "~> 0.5.2"
+  gem.add_dependency "aequitas", "~> 0.0.2"
+  gem.add_dependency "activesupport", "~> 3.2.8"
+  gem.add_dependency "activemodel", "~> 3.2.8"
 
   # Development Dependencies
   unless defined? PLATFORM and PLATFORM == 'java'
