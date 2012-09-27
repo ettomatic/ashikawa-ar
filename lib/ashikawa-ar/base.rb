@@ -22,6 +22,16 @@ module Ashikawa
           def self.database
             Setup.databases[:default]
           end
+
+          def self.from_raw_document(raw_document)
+            self.new raw_document.to_hash
+          end
+
+          def self.from_raw_documents(raw_documents)
+            raw_documents.map do |raw_document|
+              from_raw_document raw_document
+            end
+          end
         end
       end
     end

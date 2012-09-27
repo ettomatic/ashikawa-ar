@@ -59,22 +59,18 @@ module Ashikawa
       included do
         class_eval do
           def self.find(id)
-            raw_document = collection[id]
-            self.new raw_document.to_hash
+            result = collection[id]
+            from_raw_document result
           end
 
           def self.find_by_aql(query)
             results = database.query query
-            results.map do |raw_document|
-              self.new raw_document.to_hash
-            end
+            from_raw_documents results
           end
 
           def self.by_example(example)
             results = collection.by_example example: example
-            results.map do |raw_document|
-              self.new raw_document.to_hash
-            end
+            from_raw_documents results
           end
 
           def self.first_example(example)
@@ -84,9 +80,7 @@ module Ashikawa
 
           def self.all
             results = collection.all
-            results.map do |raw_document|
-              self.new raw_document.to_hash
-            end
+            from_raw_documents results
           end
         end
       end
