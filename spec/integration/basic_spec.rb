@@ -1,4 +1,5 @@
 require 'integration/spec_helper'
+require 'examples/person.rb'
 
 describe "Basics" do
   it "should recognize the truth" do
@@ -6,7 +7,6 @@ describe "Basics" do
   end
 
   describe "basic functionality" do
-    before(:all) { require "examples/person.rb"}
     subject { Person }
 
     it "should provide virtus and aequitas" do
@@ -17,7 +17,6 @@ describe "Basics" do
 
     it "should provide the collection name" do
       subject.model_name.collection.should == "people"
-      p subject.name
     end
   end
 end
