@@ -1,4 +1,5 @@
 require "ashikawa-core"
+require "ashikawa-ar/base"
 require "active_support/concern"
 
 module Ashikawa
@@ -58,22 +59,18 @@ module Ashikawa
       included do
         class_eval do
           def self.find(id)
-            collection_name = self.model_name.collection
-            collection = Setup.databases[:default][collection_name]
             raw_document = collection[id]
             self.new raw_document.to_hash
           end
 
           def self.find_by_aql(query)
-            results = Setup.databases[:default].query query
+            results = database.query query
             results.map do |raw_document|
               self.new raw_document.to_hash
             end
           end
 
           def self.by_example(example)
-            collection_name = self.model_name.collection
-            collection = Setup.databases[:default][collection_name]
             results = collection.by_example example: example
             results.map do |raw_document|
               self.new raw_document.to_hash
@@ -81,15 +78,11 @@ module Ashikawa
           end
 
           def self.first_example(example)
-            collection_name = self.model_name.collection
-            collection = Setup.databases[:default][collection_name]
             result = collection.first_example example
             self.new result.to_hash["document"]
           end
 
           def self.all
-            collection_name = self.model_name.collection
-            collection = Setup.databases[:default][collection_name]
             results = collection.all
             results.map do |raw_document|
               self.new raw_document.to_hash
