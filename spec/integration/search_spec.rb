@@ -1,6 +1,6 @@
 require 'integration/spec_helper'
 
-describe "querying for documents" do
+describe Ashikawa::AR::Search do
   before(:all) {
     require 'examples/person.rb'
 
