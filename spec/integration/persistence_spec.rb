@@ -12,7 +12,7 @@ describe Ashikawa::AR::Search do
 
   subject { Person.new name: "Sam Lowry", age: 38 }
 
-  [:save, :save!].each do |method|
+  [:save, :save!, :save_without_validation].each do |method|
     it "should save a document" do
       expect do
         subject.send method
@@ -51,5 +51,13 @@ describe Ashikawa::AR::Search do
     subject.age = "invalid"
 
     expect { subject.save! }.to raise_error Ashikawa::AR::InvalidRecord
+  end
+
+  it "should save an invalid document when using save_without_validation" do
+    subject.age = "invalid"
+
+    expect do
+      subject.save_without_validation
+    end.to change { @collection.length }.by 1
   end
 end

@@ -27,26 +27,30 @@ module Ashikawa
       #     sam.save!
       def save!;end
 
+      # Save the document to the database even if it is invalid
+      #
+      # @return [self] Returns false if not saved
+      # @api public
+      # @example Save the document to the database
+      #     sam = Person.new name: "Sam Lowry"
+      #     sam.save_without_validation
+      def save_without_validation;end
+
       included do
         class_eval do
           attr_reader :id
 
           def save
             return false unless self.valid?
-
-            if @id.nil?
-              response = self.class.collection.create self.attributes
-              @id = response.id
-            else
-              self.class.collection[@id] = self.attributes
-            end
-
-            self
+            save_without_validation
           end
 
           def save!
             raise InvalidRecord unless self.valid?
+            save_without_validation
+          end
 
+          def save_without_validation
             if @id.nil?
               response = self.class.collection.create self.attributes
               @id = response.id
