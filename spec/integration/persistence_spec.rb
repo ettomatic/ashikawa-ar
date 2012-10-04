@@ -88,4 +88,27 @@ describe Ashikawa::AR::Search do
   it "should throw an exception when deleting an unsaved document" do
     expect { subject.delete }.to raise_error Ashikawa::AR::UnsavedRecord
   end
+
+  it "should update a single attribute and save the record" do
+    subject.save
+    subject.update_attribute :age, 39
+
+    @collection[subject.id]["age"].should == 39
+  end
+
+  it "should throw an exception when updating an attribute of an unsaved document" do
+    expect { subject.update_attribute :age, 39 }.to raise_error Ashikawa::AR::UnsavedRecord
+  end
+
+  it "should update a single attribute and save the record" do
+    subject.save
+    subject.update_attributes age: 39, favorite_color: "Green"
+
+    @collection[subject.id]["age"].should == 39
+    @collection[subject.id]["favorite_color"].should == "Green"
+  end
+
+  it "should throw an exception when updating attributes of an unsaved document" do
+    expect { subject.update_attributes age: 39, favorite_color: "Green" }.to raise_error Ashikawa::AR::UnsavedRecord
+  end
 end

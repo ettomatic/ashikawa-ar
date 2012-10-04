@@ -55,6 +55,27 @@ module Ashikawa
       #     sam.delete
       def delete;end
 
+      # Update a single attribute and write to the database
+      #
+      # @param [String] key Name of the attribute
+      # @param [Object] value Value of the attribute
+      # @return [self]
+      # @raise [UnsavedRecord] if the data is not yet saved
+      # @api public
+      # @example Update the age
+      #     sam.update_attribute "age", 39
+      def update_attribute(key, value);end
+
+      # Updates multiple attributes and write to the database
+      #
+      # @param [Hash] attributes
+      # @return [self]
+      # @raise [UnsavedRecord] if the data is not yet saved
+      # @api public
+      # @example Update the age and favorite color
+      #     sam.update_attributes age: 39, favorite_color: "Green"
+      def update_attributes(attributes);end
+
       included do
         class_eval do
           attr_reader :id
@@ -90,6 +111,21 @@ module Ashikawa
             raise UnsavedRecord if @id.nil?
             self.class.collection[@id].delete
             self
+          end
+
+          def update_attribute(key, value)
+            raise UnsavedRecord if @id.nil?
+            self[key] = value
+            self.save
+          end
+
+          def update_attributes(attributes)
+            raise UnsavedRecord if @id.nil?
+            attributes.each_pair do |key, value|
+              self[key] = value
+            end
+
+            self.save
           end
         end
       end
