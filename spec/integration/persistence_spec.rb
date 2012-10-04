@@ -60,4 +60,20 @@ describe Ashikawa::AR::Search do
       subject.save_without_validation
     end.to change { @collection.length }.by 1
   end
+
+  it "should reload documents from the database on demand" do
+    subject.save
+
+    raw_document = @collection[subject.id]
+    raw_document["age"] = 39
+    raw_document.save
+
+    subject.age.should == 38
+    subject.reload
+    subject.age.should == 39
+  end
+
+  it "should throw an exception when reloading an unsaved document" do
+    expect { subject.reload }.to raise_error Ashikawa::AR::UnsavedRecord
+  end
 end
