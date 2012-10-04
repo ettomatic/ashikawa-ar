@@ -2,6 +2,7 @@ require "ashikawa-core"
 require "ashikawa-ar/base"
 require "active_support/concern"
 require "ashikawa-ar/exceptions/invalid_record"
+require "ashikawa-ar/exceptions/unsaved_record"
 
 module Ashikawa
   module AR
@@ -36,6 +37,8 @@ module Ashikawa
       #     sam.save_without_validation
       def save_without_validation;end
 
+      def reload;end
+
       included do
         class_eval do
           attr_reader :id
@@ -59,6 +62,11 @@ module Ashikawa
             end
 
             self
+          end
+
+          def reload
+            raise UnsavedRecord if @id.nil?
+            self.attributes = self.class.collection[@id]
           end
         end
       end
