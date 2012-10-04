@@ -67,14 +67,27 @@ module Ashikawa
       def update_attribute(key, value);end
 
       # Updates multiple attributes and write to the database
+      # returning false if they are invalid
       #
       # @param [Hash] attributes
-      # @return [self]
+      # @return [self, false]
       # @raise [UnsavedRecord] if the data is not yet saved
       # @api public
       # @example Update the age and favorite color
       #     sam.update_attributes age: 39, favorite_color: "Green"
       def update_attributes(attributes);end
+
+      # Updates multiple attributes and write to the database
+      # throwing an exception if they are invalid
+      #
+      # @param [Hash] attributes
+      # @return [self]
+      # @raise [InvalidRecord] if the data is invalid
+      # @raise [UnsavedRecord] if the data is not yet saved
+      # @api public
+      # @example Update the age and favorite color
+      #     sam.update_attributes! age: 39, favorite_color: "Green"
+      def update_attributes!(attributes);end
 
       included do
         class_eval do
@@ -126,6 +139,15 @@ module Ashikawa
             end
 
             self.save
+          end
+
+          def update_attributes!(attributes)
+            raise UnsavedRecord if @id.nil?
+            attributes.each_pair do |key, value|
+              self[key] = value
+            end
+
+            self.save!
           end
         end
       end

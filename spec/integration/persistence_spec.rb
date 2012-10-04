@@ -100,15 +100,27 @@ describe Ashikawa::AR::Search do
     expect { subject.update_attribute :age, 39 }.to raise_error Ashikawa::AR::UnsavedRecord
   end
 
-  it "should update a single attribute and save the record" do
-    subject.save
-    subject.update_attributes age: 39, favorite_color: "Green"
+  [:update_attributes, :update_attributes!].each do |method|
+    it "should update a single attribute and save the record via #{method}" do
+      subject.save
+      subject.send method, age: 39, favorite_color: "Green"
 
-    @collection[subject.id]["age"].should == 39
-    @collection[subject.id]["favorite_color"].should == "Green"
+      @collection[subject.id]["age"].should == 39
+      @collection[subject.id]["favorite_color"].should == "Green"
+    end
+
+    it "should throw an exception when updating attributes of an unsaved document via #{method}" do
+      expect { subject.send method, age: 39, favorite_color: "Green" }.to raise_error Ashikawa::AR::UnsavedRecord
+    end
   end
 
-  it "should throw an exception when updating attributes of an unsaved document" do
-    expect { subject.update_attributes age: 39, favorite_color: "Green" }.to raise_error Ashikawa::AR::UnsavedRecord
+  it "should return false when updating attributes without the bang" do
+    subject.save
+    subject.update_attributes(age: "old").should be_false
+  end
+
+  it "should raise an exception when updating attributes with the bang" do
+    subject.save
+    expect { subject.update_attributes!(age: "old") }.to raise_error Ashikawa::AR::InvalidRecord
   end
 end
