@@ -114,26 +114,30 @@ module Ashikawa
             self
           end
 
-          def reload
+          def check_if_saved!
             raise UnsavedRecord if @id.nil?
+          end
+
+          def reload
+            check_if_saved!
             self.attributes = self.class.collection[@id]
             self
           end
 
           def delete
-            raise UnsavedRecord if @id.nil?
+            check_if_saved!
             self.class.collection[@id].delete
             self
           end
 
           def update_attribute(key, value)
-            raise UnsavedRecord if @id.nil?
+            check_if_saved!
             self[key] = value
             self.save
           end
 
           def update_attributes(attributes)
-            raise UnsavedRecord if @id.nil?
+            check_if_saved!
             attributes.each_pair do |key, value|
               self[key] = value
             end
@@ -142,7 +146,7 @@ module Ashikawa
           end
 
           def update_attributes!(attributes)
-            raise UnsavedRecord if @id.nil?
+            check_if_saved!
             attributes.each_pair do |key, value|
               self[key] = value
             end
