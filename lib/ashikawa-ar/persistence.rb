@@ -40,10 +40,20 @@ module Ashikawa
       # Reload the record from the database
       #
       # @return [self]
+      # @raise [UnsavedRecord] if the data is not yet saved
       # @api public
       # @example Get the updated version from the database
       #     sam.reload
       def reload;end
+
+      # Delete the record from the database
+      #
+      # @return [self]
+      # @raise [UnsavedRecord] if the data is not yet saved
+      # @api public
+      # @example Get the updated version from the database
+      #     sam.delete
+      def delete;end
 
       included do
         class_eval do
@@ -73,7 +83,12 @@ module Ashikawa
           def reload
             raise UnsavedRecord if @id.nil?
             self.attributes = self.class.collection[@id]
+            self
+          end
 
+          def delete
+            raise UnsavedRecord if @id.nil?
+            self.class.collection[@id].delete
             self
           end
         end

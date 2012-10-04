@@ -76,4 +76,16 @@ describe Ashikawa::AR::Search do
   it "should throw an exception when reloading an unsaved document" do
     expect { subject.reload }.to raise_error Ashikawa::AR::UnsavedRecord
   end
+
+  it "should be possible do delete from the database" do
+    subject.save
+    @collection[subject.id].should_not be_nil
+
+    subject.delete
+    expect { @collection[subject.id] }.to raise_error Ashikawa::Core::DocumentNotFoundException
+  end
+
+  it "should throw an exception when deleting an unsaved document" do
+    expect { subject.delete }.to raise_error Ashikawa::AR::UnsavedRecord
+  end
 end
