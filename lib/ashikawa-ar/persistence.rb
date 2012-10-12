@@ -184,7 +184,7 @@ module Ashikawa
           end
 
           def persisted?
-            !@id.nil?
+            @status == :persisted
           end
 
           def deleted?
