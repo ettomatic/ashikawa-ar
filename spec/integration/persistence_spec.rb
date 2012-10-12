@@ -81,12 +81,20 @@ describe Ashikawa::AR::Persistence do
     subject.save
     @collection[subject.id].should_not be_nil
 
+    id = subject.id
+
     subject.delete
-    expect { @collection[subject.id] }.to raise_error Ashikawa::Core::DocumentNotFoundException
+    expect { @collection[id] }.to raise_error Ashikawa::Core::DocumentNotFoundException
   end
 
   it "should throw an exception when deleting an unsaved document" do
     expect { subject.delete }.to raise_error Ashikawa::AR::UnsavedRecord
+  end
+
+  it "should also delete the ID of the object" do
+    subject.save
+    subject.delete
+    subject.id.should be_nil
   end
 
   it "should update a single attribute and save the record" do
@@ -129,6 +137,13 @@ describe Ashikawa::AR::Persistence do
       subject.persisted?.should be_false
       subject.save
       subject.persisted?.should be_true
+    end
+
+    it "should know if it is deleted" do
+      subject.save
+      subject.deleted?.should be_false
+      subject.delete
+      subject.deleted?.should be_true
     end
   end
 end

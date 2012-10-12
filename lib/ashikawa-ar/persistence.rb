@@ -97,9 +97,18 @@ module Ashikawa
       #     sam.persisted?
       def persisted?;end
 
+      # Check, if the object has been deleted
+      #
+      # @return [Boolean]
+      # @api public
+      # @example Check, if sam is deleted
+      #     sam.deleted?
+      def deleted?;end
+
       included do
         class_eval do
           attr_reader :id
+          @status = :new_record
 
           def save
             return false unless self.valid?
@@ -135,6 +144,8 @@ module Ashikawa
           def delete
             check_if_saved!
             self.class.collection[@id].delete
+            @id = nil
+            @status = :deleted
             self
           end
 
@@ -164,6 +175,10 @@ module Ashikawa
 
           def persisted?
             !@id.nil?
+          end
+
+          def deleted?
+            @status == :deleted
           end
         end
       end
