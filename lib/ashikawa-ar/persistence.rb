@@ -156,6 +156,8 @@ module Ashikawa
             self
           end
 
+          alias :destroy :delete
+
           def update_attribute(key, value)
             check_if_saved!
             self[key] = value
