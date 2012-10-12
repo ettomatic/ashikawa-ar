@@ -145,5 +145,11 @@ describe Ashikawa::AR::Persistence do
       subject.delete
       subject.deleted?.should be_true
     end
+
+    it "should know if it is a new record" do
+      subject.new_record?.should be_true
+      subject.save
+      subject.new_record?.should be_false
+    end
   end
 end

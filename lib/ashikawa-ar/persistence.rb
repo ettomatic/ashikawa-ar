@@ -105,10 +105,18 @@ module Ashikawa
       #     sam.deleted?
       def deleted?;end
 
+      # Check, if the object is a new record
+      #
+      # @return [Boolean]
+      # @api public
+      # @example Check, if sam is a new record
+      #     sam.new_record?
+      def new_record?;end
+
       included do
         class_eval do
           attr_reader :id
-          @status = :new_record
+          @status = nil
 
           def save
             return false unless self.valid?
@@ -127,6 +135,8 @@ module Ashikawa
             else
               self.class.collection[@id] = self.attributes
             end
+
+            @status = :persisted
 
             self
           end
@@ -179,6 +189,10 @@ module Ashikawa
 
           def deleted?
             @status == :deleted
+          end
+
+          def new_record?
+            @status.nil?
           end
         end
       end
