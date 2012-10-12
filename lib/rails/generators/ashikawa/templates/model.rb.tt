@@ -1,0 +1,7 @@
+class <%= class_name %>
+  include Ashikawa::AR::Model
+
+<% attributes.each do |attribute| -%>
+  attribute :<%= attribute.name %><% unless attribute.type.to_s == "string" %>, <%=attribute.type%><%end%>
+<% end -%>
+end
