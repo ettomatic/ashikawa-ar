@@ -1,6 +1,6 @@
 require 'integration/spec_helper'
 
-describe Ashikawa::AR::Search do
+describe Ashikawa::AR::Persistence do
   before(:all) {
     require 'examples/person.rb'
 
@@ -122,5 +122,13 @@ describe Ashikawa::AR::Search do
   it "should raise an exception when updating attributes with the bang" do
     subject.save
     expect { subject.update_attributes!(age: "old") }.to raise_error Ashikawa::AR::InvalidRecord
+  end
+
+  describe "status of the objects" do
+    it "should know if it is persisted" do
+      subject.persisted?.should be_false
+      subject.save
+      subject.persisted?.should be_true
+    end
   end
 end

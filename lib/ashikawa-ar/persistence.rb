@@ -89,6 +89,14 @@ module Ashikawa
       #     sam.update_attributes! age: 39, favorite_color: "Green"
       def update_attributes!(attributes);end
 
+      # Check, if the object has been persisted
+      #
+      # @return [Boolean]
+      # @api public
+      # @example Check, if sam is persisted
+      #     sam.persisted?
+      def persisted?;end
+
       included do
         class_eval do
           attr_reader :id
@@ -152,6 +160,10 @@ module Ashikawa
             end
 
             self.save!
+          end
+
+          def persisted?
+            !@id.nil?
           end
         end
       end
