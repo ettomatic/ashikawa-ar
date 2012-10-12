@@ -1,6 +1,7 @@
 require "active_support/concern"
 require "active_support/core_ext/object/blank"
 require "active_model/naming"
+require "active_model/conversion"
 
 module Ashikawa
   module AR
@@ -10,6 +11,10 @@ module Ashikawa
       included do
         class_eval do
           extend ActiveModel::Naming
+          include ActiveModel::Conversion
+
+          attr_accessor :id
+          attr_accessor :status
 
           def self.collection_name
             self.model_name.collection
@@ -24,7 +29,10 @@ module Ashikawa
           end
 
           def self.from_raw_document(raw_document)
-            self.new raw_document.to_hash
+            document = self.new raw_document.to_hash
+            document.id = raw_document.id
+            document.status = :persisted
+            document
           end
 
           def self.from_raw_documents(raw_documents)

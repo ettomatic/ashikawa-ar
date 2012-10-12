@@ -115,9 +115,6 @@ module Ashikawa
 
       included do
         class_eval do
-          attr_reader :id
-          @status = nil
-
           def save
             return false unless self.valid?
             save_without_validation
