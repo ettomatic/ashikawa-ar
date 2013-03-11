@@ -5,17 +5,19 @@ describe Ashikawa::AR::Search do
     require 'examples/person.rb'
 
     Ashikawa::AR.setup :default, ARANGO_HOST
-    database = Ashikawa::Core::Database.new ARANGO_HOST
+    database = Ashikawa::Core::Database.new do |config|
+      config.url = ARANGO_HOST
+    end
     @collection = database["people"]
     @collection.truncate!
-    @johnny = @collection.create name: "Johnny"
-    @jens = @collection.create name: "Jens"
+    @johnny = @collection.create_document name: "Johnny"
+    @jens = @collection.create_document name: "Jens"
   }
 
   subject { Person }
 
   it "should find a document by ID" do
-    person = subject.find @johnny.id
+    person = subject.find @johnny.key
     person.should be_instance_of subject
     person.name.should == "Johnny"
   end

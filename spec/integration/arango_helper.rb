@@ -9,9 +9,9 @@ RSpec.configure do |config|
     process_id = $$
 
     Dir.mkdir database_directory unless Dir.exists? database_directory
-    arango_process = IO.popen("arangod #{database_directory} --watch-process #{process_id}")
+    arango_process = IO.popen("arangod #{database_directory} --watch-process #{process_id} --log.level trace")
 
-    sleep 2 # Wait for Arango to start up
+    sleep 2  # Wait for Arango to start up
   end
 
   config.after(:suite) do

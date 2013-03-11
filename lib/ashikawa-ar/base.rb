@@ -14,6 +14,7 @@ module Ashikawa
           include ActiveModel::Conversion
 
           attr_accessor :id
+          attr_accessor :key
           attr_accessor :status
 
           def self.collection_name

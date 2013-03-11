@@ -126,11 +126,11 @@ module Ashikawa
           end
 
           def save_without_validation
-            if @id.nil?
-              response = self.class.collection.create self.attributes
-              @id = response.id
+            if @key.nil?
+              response = self.class.collection.create_document self.attributes
+              @key = response.key
             else
-              self.class.collection[@id] = self.attributes
+              self.class.collection[@key] = self.attributes
             end
 
             @status = :persisted
@@ -139,19 +139,19 @@ module Ashikawa
           end
 
           def check_if_saved!
-            raise UnsavedRecord if @id.nil?
+            raise UnsavedRecord if @key.nil?
           end
 
           def reload
             check_if_saved!
-            self.attributes = self.class.collection[@id]
+            self.attributes = self.class.collection[@key]
             self
           end
 
           def delete
             check_if_saved!
-            self.class.collection[@id].delete
-            @id = nil
+            self.class.collection[@key].delete
+            @key = nil
             @status = :deleted
             self
           end

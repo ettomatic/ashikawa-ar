@@ -1,7 +1,6 @@
 require "ashikawa-core"
 require "ashikawa-ar/base"
 require "active_support/concern"
-
 module Ashikawa
   module AR
     # Provides Search functionality for your model
@@ -58,28 +57,28 @@ module Ashikawa
 
       included do
         class_eval do
-          def self.find(id)
-            result = collection[id]
+          def self.find(key)
+            result = collection[key]
             from_raw_document result
           end
 
           def self.find_by_aql(query)
-            results = database.query query
+            results = database.query.execute query
             from_raw_documents results
           end
 
           def self.by_example(example)
-            results = collection.by_example example: example
+            results = collection.query.by_example example
             from_raw_documents results
           end
 
           def self.first_example(example)
-            result = collection.first_example example
-            self.new result.to_hash["document"]
+            result = collection.query.first_example example
+            from_raw_document result.first
           end
 
           def self.all
-            results = collection.all
+            results = collection.query.all
             from_raw_documents results
           end
         end

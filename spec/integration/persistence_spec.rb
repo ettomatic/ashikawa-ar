@@ -5,7 +5,9 @@ describe Ashikawa::AR::Persistence do
     require 'examples/person.rb'
 
     Ashikawa::AR.setup :default, ARANGO_HOST
-    database = Ashikawa::Core::Database.new ARANGO_HOST
+    database = Ashikawa::Core::Database.new do |config|
+      config.url = ARANGO_HOST
+    end
     @collection = database["people"]
     @collection.truncate!
   }
@@ -29,13 +31,12 @@ describe Ashikawa::AR::Persistence do
 
     it "should update a document with new content" do
       subject.send method
-
-      id = subject.id
+      key = subject.key
 
       subject.name = "Jonathan Pryce"
       subject.send method
 
-      @collection[id]["name"].should == "Jonathan Pryce"
+      @collection[key]["name"].should == "Jonathan Pryce"
     end
   end
 
@@ -64,7 +65,7 @@ describe Ashikawa::AR::Persistence do
   it "should reload documents from the database on demand" do
     subject.save
 
-    raw_document = @collection[subject.id]
+    raw_document = @collection[subject.key]
     raw_document["age"] = 39
     raw_document.save
 
@@ -79,12 +80,12 @@ describe Ashikawa::AR::Persistence do
 
   it "should be possible do delete from the database" do
     subject.save
-    @collection[subject.id].should_not be_nil
+    @collection[subject.key].should_not be_nil
 
-    id = subject.id
+    key = subject.key
 
     subject.delete
-    expect { @collection[id] }.to raise_error Ashikawa::Core::DocumentNotFoundException
+    expect { @collection[key] }.to raise_error Ashikawa::Core::DocumentNotFoundException
   end
 
   it "should throw an exception when deleting an unsaved document" do
@@ -94,14 +95,14 @@ describe Ashikawa::AR::Persistence do
   it "should also delete the ID of the object" do
     subject.save
     subject.delete
-    subject.id.should be_nil
+    subject.key.should be_nil
   end
 
   it "should update a single attribute and save the record" do
     subject.save
     subject.update_attribute :age, 39
 
-    @collection[subject.id]["age"].should == 39
+    @collection[subject.key]["age"].should == 39
   end
 
   it "should throw an exception when updating an attribute of an unsaved document" do
@@ -113,8 +114,8 @@ describe Ashikawa::AR::Persistence do
       subject.save
       subject.send method, age: 39, favorite_color: "Green"
 
-      @collection[subject.id]["age"].should == 39
-      @collection[subject.id]["favorite_color"].should == "Green"
+      @collection[subject.key]["age"].should == 39
+      @collection[subject.key]["favorite_color"].should == "Green"
     end
 
     it "should throw an exception when updating attributes of an unsaved document via #{method}" do

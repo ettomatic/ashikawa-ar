@@ -7,7 +7,9 @@ module Ashikawa
     end
 
     def self.setup(name, location)
-      Setup.databases[name] = Ashikawa::Core::Database.new location
+      Setup.databases[name] = Ashikawa::Core::Database.new do |config|
+        config.url = location
+      end
     end
 
     class Setup
