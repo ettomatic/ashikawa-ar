@@ -16,7 +16,7 @@ Gem::Specification.new do |gem|
   gem.version       = Ashikawa::AR::VERSION
 
   gem.add_dependency "ashikawa-core", "~> 0.7.2"
-  #gem.add_dependency "virtus", "~> 0.5.4"
+  gem.add_dependency "virtus", "~> 1.0.0.beta0"
   gem.add_dependency "aequitas", "~> 0.0.2"
   gem.add_dependency "activesupport", "~> 3.2.13"
   gem.add_dependency "activemodel", "~> 3.2.13"
